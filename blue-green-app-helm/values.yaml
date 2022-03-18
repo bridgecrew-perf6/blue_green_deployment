@@ -5,9 +5,9 @@
 replicaCount: 2
 
 image:
-  firstservicerepository: karthilinux91/blue_green_web
+  firstservicerepository: karthilinux91/front-end
   tag:
-    firstservice: 2 
+    firstservice: 1 
   pullPolicy: IfNotPresent
 imagePullSecrets: 
 
@@ -20,7 +20,7 @@ revisionHistoryLimit: 1
 service:
   enabled: true
   name:
-    firstservice: blue-green-app
+    firstservice: front-end-app
   autoScalingConfigration:
     firstservicemaxReplicas: 3
     firstserviceminReplicas: 1
