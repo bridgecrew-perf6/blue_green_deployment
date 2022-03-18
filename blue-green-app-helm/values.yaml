@@ -7,7 +7,7 @@ replicaCount: 2
 image:
   firstservicerepository: karthilinux91/front-end
   tag:
-    firstservice: 2 
+    firstservice: 1 
   pullPolicy: IfNotPresent
 imagePullSecrets: 
 
