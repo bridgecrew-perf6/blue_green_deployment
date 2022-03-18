@@ -7,7 +7,7 @@ replicaCount: 2
 image:
   firstservicerepository: karthilinux91/blue_green_web
   tag:
-    firstservice: 1 
+    firstservice: 2 
   pullPolicy: IfNotPresent
 imagePullSecrets: 
 
