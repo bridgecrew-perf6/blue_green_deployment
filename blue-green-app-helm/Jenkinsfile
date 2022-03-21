@@ -1,0 +1,60 @@
+pipeline {
+  agent { node { label 'docker_node'  }}
+  stages {
+     stage('Cloning Git') {
+      steps {          git 'https://github.com/karthilinux91/blue_green_deployment.git'       }
+    }
+    
+     stage('deployment') {
+          steps{
+              script{     
+      
+       sh 'helm upgrade --install --namespace front-end-ns --timeout 10m --wait front-end-app ./blue-green-app-helm -f ./blue-green-app-helm/values.yaml --kubeconfig /home/centos/linux-amd64/kube.config '
+              }
+      }
+    } 
+    
+    stage ('Promote') {
+            input {       message "Promote active to preview"            
+                         ok "Yes, go ahead."      }
+            steps {              echo "Switiching traffic active to preview"       
+            
+            sh 'kubectl  argo rollouts promote front-end-app -n front-end-ns --kubeconfig /home/centos/linux-amd64/kube.config '
+                 }            
+        }
+    
+   
+
+    stage ('Roll Back -Undo ') {
+            input {       message "are you ready to roll back to previous version?"            
+                         ok "Yes, go ahead."      }
+            steps {              echo "Moving on to Roll back ..................."        
+            
+            sh 'kubectl  argo rollouts undo front-end-app -n front-end-ns --kubeconfig /home/centos/linux-amd64/kube.config'
+            sh 'kubectl  argo rollouts promote front-end-app -n front-end-ns --kubeconfig /home/centos/linux-amd64/kube.config'
+            //sh 'helm upgrade --install --namespace front-end-app --timeout 10m --wait blue-green-app ./blue-green-app-helm -f ./blue-green-app-helm/values.yaml --kubeconfig /home/centos/linux-amd64/kube.config '
+                }            
+        }
+   
+      stage ('Roll Back - promote') {
+            input {       message "are you ready to roll back to previous version?"            
+                         ok "Yes, go ahead."      }
+            steps {              echo "Moving on to Roll back ..................."        
+            
+            sh 'kubectl  argo rollouts promote front-end-app -n front-end-ns --kubeconfig /home/centos/linux-amd64/kube.config'
+            //sh 'helm upgrade --install --namespace front-end-app --timeout 10m --wait blue-green-app ./blue-green-app-helm -f ./blue-green-app-helm/values.yaml --kubeconfig /home/centos/linux-amd64/kube.config '
+                }            
+        }
+   
+   
+   
+  }
+   
+   
+   post { 
+        always { 
+            sh 'kubectl  argo rollouts get rollout front-end-app  -n front-end-ns --kubeconfig /home/centos/linux-amd64/kube.config'
+        }
+    }
+ 
+}
