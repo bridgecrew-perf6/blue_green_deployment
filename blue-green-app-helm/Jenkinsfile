@@ -31,7 +31,7 @@ pipeline {
             steps {              echo "Moving on to Roll back ..................."        
             
             sh 'kubectl  argo rollouts undo front-end-app -n front-end-ns --kubeconfig /home/centos/linux-amd64/kube.config'
-            sh 'kubectl  argo rollouts promote front-end-app -n front-end-ns --kubeconfig /home/centos/linux-amd64/kube.config'
+            //sh 'kubectl  argo rollouts promote front-end-app -n front-end-ns --kubeconfig /home/centos/linux-amd64/kube.config'
             //sh 'helm upgrade --install --namespace front-end-app --timeout 10m --wait blue-green-app ./blue-green-app-helm -f ./blue-green-app-helm/values.yaml --kubeconfig /home/centos/linux-amd64/kube.config '
                 }            
         }
